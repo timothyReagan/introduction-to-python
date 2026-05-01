@@ -36,10 +36,10 @@ TEMPLATES: dict[str, dict] = {
         "key_words":        ("kobold"),
         "room_description": "a red kobold that is looking through a bag stands here.&N",
         "description": (
-            "A kobold stands here looking through his bag filled with moss.\n"
+            "A kobold stands here looking through his bag, it it filled with several different types of moss.\n"
             "His scales are garnet red."
         ),
-        "race":     "Non-humanoid",
+        "race":     "Humanoid",
         "class":    "rouge",
         "level":    1,
         "stats":    [40, 50 ,40, 30, 20, 40],
