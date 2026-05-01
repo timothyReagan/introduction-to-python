@@ -29,6 +29,25 @@ TEMPLATES: dict[str, dict] = {
         "wander":   True,
     },
 
+    TEMPLATES: dict[str, dict] = {
+
+    "Red kobold": {
+        "name":             "Jremblen",
+        "key_words":        ("kobold"),
+        "room_description": "a red kobold that is looking through a bag stands here.&N",
+        "description": (
+            "A kobold stands here looking through his bag filled with moss.\n"
+            "His scales are garnet red."
+        ),
+        "race":     "Non-humanoid",
+        "class":    "rouge",
+        "level":    1,
+        "stats":    [40, 50 ,40, 30, 20, 40],
+        "aggro":    False,
+        "wander":   False,
+    },
+
+
     "void_guardian": {
         "name":             "the Void Guardian",
         "key_words":        ("guardian", "void"),
