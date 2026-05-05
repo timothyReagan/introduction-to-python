@@ -212,7 +212,31 @@ TEMPLATES: dict[str, dict] = {
         "aggro": True,
         "wander": True,
     },
+
 }
 
 # Module-level spawn — rooms.py calls  M.spawn("void_guardian")
 spawn = make_spawner(TEMPLATES, lambda: Mob)
+
+
+
+
+
+"void_guardian": {
+    "name":             "the Void Guardian",
+    "key_words":        ("guardian", "void"),
+    "room_description": (
+            "&XThe &+WVoid Guardian&N&X stands watch, unblinking.&N"
+        ),
+        "description": (
+            "&XA towering figure of condensed darkness.\n"
+            "Its eyes are two cold points of &+Wwhite light&N&X.&N"
+        ),
+        "race":     "Unknown",
+        "class":    "Guardian",
+        "level":    50,
+        "stats":    [120, 100, 130, 90, 110, 50],
+        "aggro":    False,
+        "wander":   False,
+        "position": "standing",
+    },
