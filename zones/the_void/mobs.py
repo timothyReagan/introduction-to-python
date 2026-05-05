@@ -41,6 +41,21 @@ TEMPLATES: dict[str, dict] = {
         "aggro":    False,
         "wander":   True,
     },
+    "Lucas": {
+        "name":             "Lucas",
+        "key_words":        ("Lucas"),
+        "room_description": "&wLucas meanders about aimlessly.&N",
+        "description": (
+            "A student with a faraway look,\n"
+            "Or  just lost."
+        ),
+        "race": "Elf",
+        "class": "Shortone",
+        "level": 1,
+        "stats": [60, 65, 60, 80, 70, 75],
+        "aggro": False,
+        "wander": True,
+    },
     "Mr. Carlson": {
         "name":             "Mr. Carlson",
         "key_words":        ("Mr.", "Carlson"),
@@ -70,21 +85,6 @@ TEMPLATES: dict[str, dict] = {
         "stats":    [40, 50 ,40, 30, 20, 40],
         "aggro":    False,
         "wander":   False,
-    },
-        "my_friend": {
-        "name":             "a student",
-        "key_words":        ("student", "friend"),
-        "room_description": "&wA weanders about aimlessly.&N",
-        "description": (
-            "A student with a faraway look,\n"
-            "Or  just lost."
-        ),
-        "race": "Elf",
-        "class": "Shortone",
-        "level": 1,
-        "stats": [60, 65, 60, 80, 70, 75],
-        "aggro": False,
-        "wander": True,
     },
     "Shrimpman": {
         "name":             "Shrimpman",
@@ -116,7 +116,6 @@ TEMPLATES: dict[str, dict] = {
         "aggro":    False,
         "wander":   True,
     },
-
     "wandering_teacher": {
         "name":             "a wandering teacher",
         "key_words":        ("teacher", "wandering"),
@@ -132,7 +131,6 @@ TEMPLATES: dict[str, dict] = {
         "aggro":    False,
         "wander":   True,
     },
-
     "my_friend": {
         "name":             "a wandering student",
         "key_words":        ("student", "wandering"),
@@ -159,10 +157,8 @@ TEMPLATES: dict[str, dict] = {
         "aggro": False,
         "wander": False,
         "position": "standing",
-
-    
     },
-        "Citadel Guard": {
+    "Citadel Guard": {
         "name":             "Citadel Guard",
         "key_words":        ("Guard", "Citadel"),
         "room_description": "&wA An armed guard wanders here.&N",
@@ -176,7 +172,6 @@ TEMPLATES: dict[str, dict] = {
         "aggro":    False,
         "wander":   False,
     },
-<<<<<<< HEAD
     "Adam Sandler": {
         "name":             "Adam Sandler",
         "key_words":        ("Adam", "Sandler"),
@@ -191,21 +186,6 @@ TEMPLATES: dict[str, dict] = {
         "stats":    [0, 16, 60, 32, 7, 7],
         "aggro":    True,
         "wander":   True,
-=======
-    # kill=False — combat system refuses killing blow on this mob.
-    "moted_pc": {
-        "name": "Moted",
-        "key_words": ("moted", "dwarf"),
-        "room_description": "&wMoted the Dwarf is here.&N",
-        "description": "A weathered Dwarven shaman. Best not to cross him.",
-        "race": "Dwarf",
-        "class": "Shaman",
-        "level": 24,
-        "stats": [88, 80, 80, 80, 80, 80],
-        "aggro": False,
-        "wander": False,
-        "kill": False,
->>>>>>> f4af659054a31016cf2b6a834f0a41b7a144682f
     },
 }
 
