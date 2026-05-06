@@ -215,5 +215,23 @@ TEMPLATES: dict[str, dict] = {
 
 }
 
+
+
+    "Sand Puma": {
+        "name":             "Sand Puma",
+        "key_words":        ("puma"),
+        "room_description": "&wA sand puma aimlesly being taken into the quick sand.&N",
+        "description": (
+            "rockyish sand color and yellow.\n"
+            "puma +."
+        ),
+        "race":     "pumaish",
+        "class":    "sandy",
+        "level":    1,
+        "stats":    [99, 68, 71, 87, 81, 100],
+        "aggro":    False,
+        "wander":   True,
+    },
+
 # Module-level spawn — rooms.py calls  M.spawn("void_guardian")
 spawn = make_spawner(TEMPLATES, lambda: Mob)
