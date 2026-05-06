@@ -2,26 +2,6 @@
 ashenmoor.engine.game
 ─────────────────────
 Game state container and core engine functions.
-
-The notebook had global dicts (locations, rooms, characters) threaded through
-module-level code and referenced inside class methods.  This module replaces
-that pattern with a GameState object that owns all runtime state and passes
-itself to the functions that need it.
-
-Usage
------
-    from ashenmoor.engine import GameState
-    from ashenmoor.color  import crepl
-
-    state = GameState()
-    state.load_world(rooms, characters, locations)
-
-    crepl(
-        handler  = state.handle,
-        prompt   = "&g>&N ",
-        banner   = "&+WWelcome!&N",
-        farewell = "&CGoodbye!&N",
-    )
 """
 
 from __future__ import annotations
@@ -30,6 +10,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..world.room      import Room
     from ..core.character  import Character
+
+from .targeting import find_target, find_all_targets, target_name
 
 
 # ── Movement directions ───────────────────────────────────────────────────────
@@ -49,29 +31,22 @@ def _expand_direction(d: str) -> str:
     return _DIR_EXPAND.get(d.lower(), d.lower())
 
 
-# ── go() — pure function, no global state ────────────────────────────────────
+# ── go() ─────────────────────────────────────────────────────────────────────
 
 def go(character: str,
        locations: dict[str, int],
        rooms:     dict[int, "Room"],
        direction: str) -> object:
     """
-    Move *character* in *direction*.
-
-    Updates locations[character] in place.
-
-    Returns
-    -------
-    Room   if the move succeeded (the destination room object)
-    str    if the move failed (the 'alas' message)
+    Move *character* in *direction*. Updates locations in place.
+    Returns the destination Room on success, or an error string.
     """
     direction = _expand_direction(direction)
-    room = rooms[locations[character]]
-    dest_id = room.exit_room_id(direction)
+    room      = rooms[locations[character]]
+    dest_id   = room.exit_room_id(direction)
     if dest_id is not None and dest_id in rooms:
         locations[character] = dest_id
         return rooms[dest_id]
-    # No exit — check if any exit failed or there were none at all
     return "&NAlas, you cannot go that way. . . ."
 
 
@@ -79,15 +54,7 @@ def go(character: str,
 
 class GameState:
     """
-    Owns all runtime world state and exposes a handle() method suitable
-    for passing directly to crepl().
-
-    Attributes
-    ----------
-    rooms       dict[int, Room]
-    characters  dict[str, Character]
-    locations   dict[str, int]          character_name -> room_number
-    player      str                     name of the player character
+    Owns all runtime world state and exposes handle() for crepl().
     """
 
     def __init__(self):
@@ -98,32 +65,14 @@ class GameState:
         self.object_templates: dict[str, dict]        = {}
         self.mob_templates:    dict[str, dict]        = {}
 
-    def load_world(self,
-                   rooms:      dict,
-                   characters: dict,
-                   locations:  dict,
-                   player:     str = "") -> None:
-        """Populate the game state from pre-built dicts."""
+    def load_world(self, rooms, characters, locations, player=""):
         self.rooms      = rooms
         self.characters = characters
         self.locations  = locations
         self.player     = player or (next(iter(characters)) if characters else "")
 
     def load_zone(self, zone) -> None:
-        """
-        Merge a Zone into the live world.
-
-        Rooms are added to self.rooms (existing rooms with the same number
-        are overwritten — zone designers should use non-overlapping vnum ranges).
-
-        Object and mob templates are merged into the world template registries
-        so the engine can spawn new instances of any template at runtime.
-
-        Parameters
-        ----------
-        zone : ashenmoor.world.Zone
-        """
-        # Warn on room number collisions rather than silently overwriting
+        """Merge a Zone's rooms and templates into the live world."""
         collisions = set(zone.rooms) & set(self.rooms)
         if collisions:
             import warnings
@@ -135,58 +84,159 @@ class GameState:
         self.object_templates.update(zone.object_templates)
         self.mob_templates.update(zone.mob_templates)
 
-    # ── Current room for player ───────────────────────────────────────────────
+    # ── Convenience ───────────────────────────────────────────────────────────
 
     @property
-    def current_room(self) -> "Room | None":
+    def current_room(self):
         room_id = self.locations.get(self.player)
         return self.rooms.get(room_id) if room_id is not None else None
+
+    def _target(self, target_str: str):
+        """
+        Resolve a target string in the player's current room.
+
+        Convenience wrapper around find_target() that supplies the current
+        room, locations, and characters automatically.  Any command handler
+        can call self._target("2.marker") and get back the instance or None.
+        """
+        room = self.current_room
+        if room is None:
+            return None
+        return find_target(target_str, room, self.locations, self.characters)
 
     # ── Command handler ───────────────────────────────────────────────────────
 
     def handle(self, raw: str) -> object:
-        """
-        Process one line of player input.
-
-        Returns a string or object whose __str__ contains Diku color codes,
-        which crepl() will pass to cprint().
-        Returns None to produce no output.
-        Returns the string 'quit' to signal crepl() to end the loop.
-        """
-        tokens    = raw.strip().lower().split()
+        tokens      = raw.strip().lower().split()
         if not tokens:
             return None
         verb, *args = tokens
 
-        # ── quit ──────────────────────────────────────────────────────────────
+        # quit
         if verb in ("quit", "exit", "leave", "q", "camp"):
             return "quit"
 
-        # ── movement ─────────────────────────────────────────────────────────
+        # movement
         if verb in DIRECTIONS or verb == "go":
             direction = args[0] if verb == "go" and args else verb
             return go(self.player, self.locations, self.rooms, direction)
 
-        # ── look ──────────────────────────────────────────────────────────────
-        if verb in ("look", "l"):    ## fix this to look at objects/characters,
-            room = self.current_room ## it should use a reusable targeting
-            if room is None:         ## function
-                return "&RYou are nowhere.&N"
-            return room.render(self.locations, self.characters)
+        # look / look <target>
+        if verb in ("look", "l"):
+            return self._cmd_look(args)
 
-        # ── who ───────────────────────────────────────────────────────────────
+        # examine / ex / x
+        if verb in ("examine", "ex", "x"):
+            return self._cmd_examine(args)
+
+        # who
         if verb == "who":
             return self._who()
 
-        # ── score / stats ─────────────────────────────────────────────────────
+        # score / stats
         if verb in ("score", "stats", "stat"):
             char = self.characters.get(self.player)
             return char.character_sheet() if char else "&RNo character found.&N"
 
-        # ── unknown ───────────────────────────────────────────────────────────
         return "&NPardon?"
 
-    # ── Utility ───────────────────────────────────────────────────────────────
+    # ── look ─────────────────────────────────────────────────────────────────
+
+    # All words that count as a direction for 'look <direction>'
+    _ALL_DIRS = frozenset({
+        "north","south","east","west","up","down",
+        "northeast","northwest","southeast","southwest",
+        "n","s","e","w","u","d","ne","nw","se","sw",
+    })
+
+    def _cmd_look(self, args: list) -> str:
+        room = self.current_room
+        if room is None:
+            return "&RYou are nowhere.&N"
+
+        # bare 'look' — describe the room
+        if not args:
+            return room.render(self.locations, self.characters)
+
+        token = args[0].lower()
+
+        # 'look <direction>' — peek into the next room
+        if token in self._ALL_DIRS:
+            direction = _expand_direction(token)
+            dest, blocked, msg = room.peek(direction, self.rooms)
+            if msg:
+                return msg
+            # Show the destination room name + description only (not its
+            # full contents — players have to enter to see those)
+            return f"&+W{dest.name}&N\n  {dest.description}"
+
+        # 'look <target>' — describe a specific thing in this room
+        target_str = " ".join(args)
+        instance   = find_target(target_str, room, self.locations, self.characters)
+        if instance is None:
+            return f"&wYou don't see any '&W{target_str}&w' here.&N"
+        return self._describe(instance)
+
+    # ── examine ───────────────────────────────────────────────────────────────
+
+    def _cmd_examine(self, args: list) -> str:
+        """
+        examine <target>   — show the full description of a target.
+
+        Uses the same targeting system as look:
+            examine marker       first marker in the room
+            examine 2.marker     second marker
+            examine guardian     the void guardian mob
+            examine moted        a character named moted
+        """
+        if not args:
+            return "&wExamine what?  e.g.  &Wexamine 2.marker&N"
+
+        room = self.current_room
+        if room is None:
+            return "&RYou are nowhere.&N"
+
+        target_str = " ".join(args)
+        instance   = find_target(target_str, room, self.locations, self.characters)
+
+        if instance is None:
+            return f"&wYou don't see any '&W{target_str}&w' here.&N"
+
+        return self._describe(instance)
+
+    # ── describe — shared by look and examine ─────────────────────────────────
+
+    def _describe(self, instance) -> str:
+        """
+        Return the appropriate description string for any target type.
+
+        Mob / Character   → character_sheet() + examine() if present
+        Object            → description field
+        """
+        from ..world.mob import Mob
+        from ..core.character import Character
+        from ..world.objects import Object
+
+        if isinstance(instance, Mob):
+            # Mobs have both a character sheet and an examine description
+            parts = []
+            if instance.description:
+                parts.append(instance.description)
+            else:
+                parts.append(f"You see nothing special about {instance.name}.")
+            return "\n".join(parts)
+
+        if isinstance(instance, Character):
+            return instance.character_sheet()
+
+        if isinstance(instance, Object):
+            desc = getattr(instance, "description", "")
+            name = target_name(instance)
+            return desc if desc else f"You see nothing special about {name}."
+
+        return str(instance)
+
+    # ── who ───────────────────────────────────────────────────────────────────
 
     def _who(self) -> str:
         if not self.characters:
@@ -200,5 +250,4 @@ class GameState:
         return "\n".join(lines)
 
     def character_list(self) -> str:
-        """Formatted character table — same as _who() but public."""
         return self._who()
