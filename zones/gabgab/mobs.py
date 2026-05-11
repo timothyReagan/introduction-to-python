@@ -47,7 +47,7 @@ TEMPLATES: dict[str, dict] = {
         "wander": False,
     },
 
-     "the cheese sniffer": {
+     "the cheez sniffer": {
         "name": "the &yc&Yh&N&ye&Ye&N&ys&Ye&N sniffer",
         "key_words": ("cheese", "sniffer"),
         "room_description": "&Wthe&N &yc&Yh&N&ye&N&ys&Ye&N &bsniffer &Wsniffs around here&N",
