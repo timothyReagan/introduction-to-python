@@ -43,7 +43,7 @@ TEMPLATES: dict[str, dict] = {
         "wander": False,
     },
 
-    "blank_templet": {
+    "blank_template": {
         "name": "name",
         "key_words": ("1", "2"),
         "room_description": "",
