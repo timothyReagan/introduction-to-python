@@ -1,4 +1,4 @@
-`"""
+"""
 zones.the_void.mobs
 ───────────────────
 Mob templates for The Void zone.
