@@ -14,7 +14,7 @@ from ashenmoor.world.zone import make_spawner
 TEMPLATES: dict[str, dict] = {
     "mr_mob": {
         "name": "Mr Mob",
-        "key_words": ("mr", "mob"),
+        "key_words": ("mbbbbbbbbbbbbbbbbhh0r", "mob"),
         "room_description": "wondering in the forest",
         "description": ("This mob was spawned from homework"),
         "race": "Human",

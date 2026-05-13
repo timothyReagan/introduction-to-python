@@ -14,6 +14,14 @@ from ashenmoor.world import Object, Item, Weapon
 from ashenmoor.world.zone import make_spawner
 
 TEMPLATES: dict[str, dict] = {
+    "Nuke shot": {
+        "spawn_as":         Object,
+        "name":             "a &Nuke shot&N",
+        "key_words":        ("Nuke", "shot",),
+        "room_description": "a {g&wNuke shot&N has been carelessly discarded here.",
+        "description":      "A fishing rod that seems to be ready to pull.",
+    }, 
+
     "green_marker": {
         "spawn_as":         Object,
         "name":             "a &ggreen expo marker&N",

@@ -15,13 +15,13 @@ from . import objects as O
 from . import mobs as M
 
 ROOMS: dict[int, Room] = {
-    1: Room(
+    4: Room(
         {
-            "number": 1,
-            "name": "The Void",
-            "description": "There is nothing here but the sound of rushing of wind.\nWe are waiting for the Spirit of God to move over it.",
-            "indoors": False,
-            "terrain": "no ground",
+            "number": 4,
+            "name": "&BThe Farlands&N",
+            "description": "Lots of repeating glitched terrian.",
+            "indoors": True,
+            "terrain": "ground",
             "exits": [
                 {"direction": "north", "roomId": 1},
                 {"direction": "south", "roomId": 1},
@@ -31,10 +31,9 @@ ROOMS: dict[int, Room] = {
                 {"direction": "down", "roomId": 1},
             ],
             "objects": [
-                O.spawn("silken_sack"),
-                O.spawn("windsong"),
+                O.spawn("Nuke shot"),
             ],
-            "mobs": [M.spawn("escbaalion")],  # two independent students
+            "mobs": [M."George Washington")],  # two independent students
         }
     ),
 }
