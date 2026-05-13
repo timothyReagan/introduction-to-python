@@ -26,6 +26,20 @@ TEMPLATES: dict[str, dict] = {
         "stats": [60, 65, 60, 80, 70, 75],
         "aggro": False,
         "wander": True,
+    },
+    "Acursed Elk": {
+        "name": "Acursed Elk",
+        "key_words": ("Acursed", "Elk"),
+        "room_description": "&wAn Acursed Elk stands here.&N",
+        "description": (
+            "A pale thin Elk with mangled antlers.\n"
+        ),
+        "race": "Elk",
+        "class": "Animal",
+        "level": 1,
+        "stats": [10, 10, 10, 10, 10, 10],
+        "aggro": False,
+        "wander": True,
     }
 }
 
