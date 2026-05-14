@@ -18,7 +18,7 @@ TEMPLATES: dict[str, dict] = {
         "spawn_as":         Item,
         "name":             "a &Ya cheese wheel&N",
         "key_words":        ("cheese", "wheel"),
-        "room_description": "a {&Ya cheese wheel&N} is laid here, looking fairly delicious.",
+        "room_description": "a &Ya cheese wheel&N is laid here, looking very delicious.",
         "description":      "a delicious-looking wheel of cheese.",
         "weight":           5,
     },
@@ -28,7 +28,7 @@ TEMPLATES: dict[str, dict] = {
         "name":             "a toy cheese",
         "key_words":        ("toy", "cheese"),
         "room_description": "a &mtoy &Ycheese&N is lying on the ground here.",
-        "description":      "A cheese-shaped toy, made of wood and painted yellow. It looks like it would be fun to throw.",
+        "description":      "A cheese-shaped toy, made of wood and painted yellow.\n It looks like it would be fun to throw.",
         "weight":           2,
     },
 }

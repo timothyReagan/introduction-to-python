@@ -18,8 +18,8 @@ ROOMS: dict[int, Room] = {
     1: Room(
         {
             "number": 1,
-            "name": "The Cheese Layer",
-            "description": "&WYou are in the cheese layer of the world.\n &N&yCheese&N is everywhere, in all shapes and sizes. &N",
+            "name": "&WThe &yc&Yh&N&ye&Ye&N&ys&Ye&N Layer&N",
+            "description": "&WYou are in the &Ycheese&N &Wlayer of the&N &yw&Go&N&yr&Gl&N&yd.\n &N&yc&Yh&N&ye&Ye&N&ys&Ye&N &Wis everywhere, in all shapes and sizes.&N\n &WThe air smells &N&rstrongly &Wof &yc&Yh&N&ye&Ye&N&ys&Ye&N,&W and you can see little&N &ybits &Wof it floating in the air.&N\n\n",
             "indoors": False,
             "terrain": "cheese",
             "exits": [
@@ -34,7 +34,7 @@ ROOMS: dict[int, Room] = {
                 O.spawn("cheese wheel"),
                 O.spawn("toy cheese"),
             ],
-            "mobs": [M.spawn("cheese monster"), M.spawn("cheez sniffer"), M.spawn("the cheese spirit")],
+            "mobs": [M.spawn("the cheese monster"), M.spawn("the cheez sniffer"), M.spawn("the cheese spirit")],
         },
     ),
 }

@@ -61,7 +61,7 @@ TEMPLATES: dict[str, dict] = {
     "the cheese spirit": {
         "name": "the cheese spirit",
         "key_words": ("cheese", "spirit"),
-        "room_description": "&Wthe&N &yc&Yh&N&ye&N&ys&Ye&N &bspirit &Whaunts this place&N",
+        "room_description": "&Wthe&N &yc&Yh&N&ye&N&ys&Ye&N &bspirit &Rhaunts&N &Wthis place&N",
         "description": (
             "a cheese spirit haunting this place "
             "most likely haunting cheese monsters &msleep..."
