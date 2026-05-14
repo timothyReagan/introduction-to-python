@@ -1,7 +1,7 @@
 """
 zones.the_void.rooms
 ────────────────────
-Room definitions for The Void zone.  Vnum range: 1 – 99.
+Room definitions for The Void zone.  Vnum range: 1 – 13.
 
 Each room entry calls O.spawn() / M.spawn() to place fresh object and mob
 instances.  Calling spawn() twice places two independent copies, so loot
@@ -15,9 +15,9 @@ from . import objects as O
 from . import mobs as M
 
 ROOMS: dict[int, Room] = {
-    4: Room(
+    1: Room(
         {
-            "number": 4,
+            "number": 1,
             "name": "&BThe Farlands&N",
             "description": "Lots of repeating glitched terrian.",
             "indoors": True,
