@@ -60,7 +60,8 @@ def main():
     state.load_world({}, characters, locations, player="Moted")
 
     # Load zones — rooms, object templates, and mob templates all merge in
-    state.load_zone(THE_VOID)
+    #state.load_zone(THE_VOID)
+    state.load_zone(EVA)
     # state.load_zone(RIVERVIEW)  # add more zones here
     state.load_zone(CRYSTAL_CAVERNS)
 
